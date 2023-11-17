@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aurowallet/mina-provider": "^1.0.0",
     "@hookform/resolvers": "^3.3.2",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-separator": "^1.0.3",
@@ -48,9 +49,9 @@
     "typescript": "^5"
   },
   "peerDependencies": {
+    "@proto-kit/module": "*",
     "@proto-kit/sdk": "*",
     "@proto-kit/sequencer": "*",
-    "@proto-kit/module": "*",
     "o1js": "0.13.1"
   }
 }

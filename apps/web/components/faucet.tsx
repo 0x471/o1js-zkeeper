@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
+import { Nullifier, ProviderError } from "@aurowallet/mina-provider";
 
 export interface FaucetProps {
   wallet?: string;
@@ -12,13 +13,32 @@ export interface FaucetProps {
   onDrip: () => void;
 }
 
-export function Faucet({
+export async function Faucet({
   wallet,
   onConnectWallet,
   onDrip,
   loading,
 }: FaucetProps) {
   const form = useForm();
+
+  const handleClick = async () => {
+    wallet ?? onConnectWallet();
+
+    if (wallet) {
+      const signResult: Nullifier | ProviderError = await window.mina
+        ?.createNullifier({
+          message: [1, 2, 3], // or ["1", "2", "3"]
+        })
+        .catch((err: any) => err);
+
+      // Handle the result as needed
+      console.log(`nullifier: ${signResult}`);
+
+      // Call onDrip() here if needed
+      onDrip();
+    }
+  };
+
   return (
     <Card className="w-full p-4">
       <div className="mb-2">
@@ -53,10 +73,7 @@ export function Faucet({
           type="submit"
           className="mt-6 w-full"
           loading={loading}
-          onClick={() => {
-            wallet ?? onConnectWallet();
-            wallet && onDrip();
-          }}
+          onClick={handleClick}
         >
           {wallet ? "Drip 💦" : "Connect wallet"}
         </Button>
