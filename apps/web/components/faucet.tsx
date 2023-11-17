@@ -27,15 +27,13 @@ export async function Faucet({
     if (wallet) {
       const signResult: Nullifier | ProviderError = await window.mina
         ?.createNullifier({
-          message: [1, 2, 3], // or ["1", "2", "3"]
+          message: ["1337"],
         })
         .catch((err: any) => err);
 
-      // Handle the result as needed
-      console.log(`nullifier: ${signResult}`);
+      console.log("nullifier:", signResult);
 
-      // Call onDrip() here if needed
-      onDrip();
+      //onDrip();
     }
   };
 
