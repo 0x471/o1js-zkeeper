@@ -21,7 +21,7 @@ export class Balances extends RuntimeModule<BalancesConfig> {
   @state() public circulatingSupply = State.from<UInt64>(UInt64);
 
   @runtimeMethod()
-  public addBalance(address: PublicKey, amount: UInt64): void {
+  public mint(address: PublicKey, amount: UInt64): void {
     const circulatingSupply = this.circulatingSupply.get();
     const newCirculatingSupply = circulatingSupply.value.add(amount);
     assert(
@@ -36,16 +36,16 @@ export class Balances extends RuntimeModule<BalancesConfig> {
 
 
   @runtimeMethod()
-  public subtractBalance(address: PublicKey, amount: UInt64): void {
+  public burn(address: PublicKey, amount: UInt64): void {
     const currentBalance = this.balances.get(address);
     assert(
       amount.lessThanOrEqual(new UInt64(currentBalance)),
-      "Amount to subtract should be lower than the current balance"
+      "Amount to burn should be lower than the current balance"
     );
     const circulatingSupply = this.circulatingSupply.get();
     this.circulatingSupply.set(circulatingSupply.value.sub(amount));
 
-    const subtractedBalance = currentBalance.value.sub(amount);
-    this.balances.set(address, subtractedBalance);
+    const balanceAfterBurn = currentBalance.value.sub(amount);
+    this.balances.set(address, balanceAfterBurn);
   }
 }

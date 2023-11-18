@@ -6,7 +6,7 @@ import { log } from "@proto-kit/common";
 log.setLevel("ERROR");
 
 describe("balances", () => {
-  it("should demonstrate how to add balance", async () => {
+  it("should demonstrate how to mint", async () => {
     const appChain = TestingAppChain.fromRuntime({
       modules: {
         Balances,
@@ -28,7 +28,7 @@ describe("balances", () => {
     const balances = appChain.runtime.resolve("Balances");
 
     const tx1 = await appChain.transaction(alice, () => {
-      balances.addBalance(alice, UInt64.from(1000));
+      balances.mint(alice, UInt64.from(1000));
     });
 
     await tx1.sign();
@@ -43,7 +43,7 @@ describe("balances", () => {
   }, 1_000_000);
 
 
-  it('should demonstrate how to subtract balance', async () => {
+  it('should demonstrate how to burn', async () => {
     const appChain = TestingAppChain.fromRuntime({
       modules: {
         Balances,
@@ -66,7 +66,7 @@ describe("balances", () => {
 
 
     const tx1 = await appChain.transaction(alice, () => {
-      balances.addBalance(alice, UInt64.from(1000));
+      balances.mint(alice, UInt64.from(1000));
     });
 
     await tx1.sign();
@@ -80,7 +80,7 @@ describe("balances", () => {
     expect(balance1?.toBigInt()).toBe(1000n);
 
     const tx2 = await appChain.transaction(alice, () => {
-      balances.subtractBalance(alice, UInt64.from(1000));
+      balances.burn(alice, UInt64.from(1000));
     });
 
     await tx2.sign();
