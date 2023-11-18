@@ -10,42 +10,48 @@ import {
   Experimental,
   Field,
   MerkleMapWitness,
-  MerkleTree,
   Nullifier,
   Poseidon,
+  PublicKey,
   Struct,
   UInt64,
 } from "o1js";
+import { inject } from "tsyringe";
+import { Balances } from "./balances";
+import { AppChain  } from "@proto-kit/sdk";
 
 export class MixerPublicOutput extends Struct({
   root: Field,
   nullifier: Field,
-}) {}
+  path: Field
+}) { }
 
 export const message: Field[] = [Field(1337)];
 
-export function canWithdraw(
+export let witnessAppchain: AppChain<any, any, any, any>;
+
+export function canWithdraw( 
   witness: MerkleMapWitness,
-  nullifier: Nullifier
+  nullifier: Nullifier,
 ): MixerPublicOutput {
-  const key = Poseidon.hash(nullifier.getPublicKey().toFields());
+  const key = Poseidon.hash([witnessAppchain.runtime.resolve('Mixer').commitments.path].concat(nullifier.getPublicKey().toFields()))
   const [computedRoot, computedKey] = witness.computeRootAndKey(
     Bool(true).toField()
   );
   computedKey.assertEquals(key);
-
-  nullifier.verify(message); 
-
+  nullifier.verify(message);
+  
   return new MixerPublicOutput({
     root: computedRoot,
     nullifier: nullifier.key(),
+    path: witnessAppchain.runtime.resolve('Mixer').commitments.path,
   });
 }
 
 export const mixerCircuit = Experimental.ZkProgram({
   publicOutput: MixerPublicOutput,
   methods: {
-    canClaim: {
+    canWithdraw: {
       privateInputs: [MerkleMapWitness, Nullifier],
       method: canWithdraw,
     },
@@ -53,33 +59,38 @@ export const mixerCircuit = Experimental.ZkProgram({
 });
 
 
-export class MixerProof extends Experimental.ZkProgram.Proof(mixerCircuit) {}
+export class MixerProof extends Experimental.ZkProgram.Proof(mixerCircuit) { }
 
 @runtimeModule()
 export class Mixer extends RuntimeModule<unknown> {
-  @state() public commitment = State.from<Field>(Field);
+  @state() public commitments = StateMap.from<PublicKey, Field>(PublicKey, Field);
   @state() public nullifiers = StateMap.from<Field, Bool>(Field, Bool);
-  
-  // @runtimeMethod()
-  // public init() {
-  //   const Tree = new MerkleTree(8);
-  // }
+  @state() public blockRootHashes = StateMap.from<Field, Bool>(Field, Bool);
+
+  public constructor(@inject("Balances") public balances: Balances) {
+    super();
+  }
+
 
   @runtimeMethod()
-  public setCommitment(commitment: Field) {
+  public deposit(commitment: PublicKey,) {
+    this.commitments.set(commitment, Field(1337));
+    this.blockRootHashes.set(this.network.previous.rootHash, Bool(true)); 
+    // TODO: subtract balance
 
-    // this.commitment.set(commitment);
   }
 
   @runtimeMethod()
-  public claim(mixerProof: MixerProof) {
-    mixerProof.verify();  
-    const commitment = this.commitment.get();
+  public withdraw(mixerProof: MixerProof) {
+    mixerProof.verify();
+    const commitment = this.commitments.get(this.transaction.sender);
 
     assert(
       mixerProof.publicOutput.root.equals(commitment.value),
       "Mixer proof does not contain the correct commitment"
     );
+
+    assert(mixerProof.publicOutput.path.equals(this.commitments.path!))
 
     const isNullifierUsed = this.nullifiers.get(
       mixerProof.publicOutput.nullifier
@@ -88,7 +99,6 @@ export class Mixer extends RuntimeModule<unknown> {
     assert(isNullifierUsed.value.not(), "Nullifier has already been used");
 
     this.nullifiers.set(mixerProof.publicOutput.nullifier, Bool(true));
-
-    this.send({to: this.sender, amount: UInt64.from(0.5)});
+    this.balances.addBalance(this.transaction.sender, UInt64.from(1000));
   }
 }
