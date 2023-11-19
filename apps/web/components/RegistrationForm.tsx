@@ -19,10 +19,13 @@ const RegistrationForm: React.FC = () => {
   <div className="mb-4">
     <input type="text" placeholder="$MerkleWitness" className="w-[350px] h-[50px] p-2 border" required />
   </div>
+  <button type="submit" className="w-full bg-purple-800 w-[200px] h-[40px] text-white py-1 rounded">
+    Generate Proof
+  </button>
   <div className="mb-4">
-    <input type="text" placeholder="PROOF" className="w-[350px] h-[50px] p-2 border" readOnly />
+    <input type="text" placeholder="     ===PROOF===" className=" p-2 border item-center" readOnly />
   </div>
-  <button type="submit" className="w-full bg-purple-800 text-white py-2 rounded">
+  <button type="submit" className="w-full bg-purple-800 text-white py-2 rounded w-[200px] h-[40px] ">
     Withdraw Tokens
   </button>
 </form>
