@@ -18,7 +18,7 @@ import {
 } from "o1js";
 import { inject } from "tsyringe";
 import { Balances } from "./balances";
-import { AppChain  } from "@proto-kit/sdk";
+import { AppChain } from "@proto-kit/sdk";
 
 export class MixerPublicOutput extends Struct({
   root: Field,
@@ -30,7 +30,7 @@ export const message: Field[] = [Field(1337)];
 
 export let witnessAppchain: AppChain<any, any, any, any>;
 
-export function canWithdraw( 
+export function canWithdraw(
   witness: MerkleMapWitness,
   nullifier: Nullifier,
 ): MixerPublicOutput {
@@ -40,7 +40,7 @@ export function canWithdraw(
   );
   computedKey.assertEquals(key);
   nullifier.verify(message);
-  
+
   return new MixerPublicOutput({
     root: computedRoot,
     nullifier: nullifier.key(),
@@ -82,8 +82,8 @@ export class Mixer extends RuntimeModule<unknown> {
   @runtimeMethod()
   public withdraw(mixerProof: MixerProof) {
     mixerProof.verify();
-    const commitment = this.commitments.get(this.transaction.sender);
-
+    // Something is wrong here... The code inside Protokit runtime module is  open and theoritically, everyone can see it
+    const commitment = this.commitments.get(this.transaction.sender); 
     assert(
       mixerProof.publicOutput.root.equals(commitment.value),
       "Mixer proof does not contain the correct commitment"
