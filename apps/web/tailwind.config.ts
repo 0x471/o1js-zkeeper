@@ -1,5 +1,5 @@
-/** @type {import('tailwindcss').Config} */
 import { fontFamily } from "tailwindcss/defaultTheme";
+
 
 module.exports = {
   darkMode: ["class"],
@@ -76,7 +76,16 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
+      '@layer components': {
+        '.border-border': {
+          borderWidth: '1px',
+          borderColor: '#000',
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
 };

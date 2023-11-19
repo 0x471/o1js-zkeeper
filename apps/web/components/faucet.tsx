@@ -5,7 +5,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Nullifier, ProviderError } from "@aurowallet/mina-provider";
-import { MixerProof } from "chain/dist/mixer";
 
 export interface FaucetProps {
   wallet?: string;
@@ -26,7 +25,6 @@ export async function Faucet({
     wallet ?? onConnectWallet();
 
     if (wallet) {
-      onDrip();
       const signResult: Nullifier | ProviderError = await window.mina
         ?.createNullifier({
           message: ["1337"],
@@ -34,20 +32,16 @@ export async function Faucet({
         .catch((err: any) => err);
 
       console.log("nullifier:", signResult);
-      console.log(MixerProof.publicInputType)
 
-
-
+      //onDrip();
     }
   };
 
   return (
-    <Card className="w-full p-4">
+    <Card className="w-full p-4 mt-40 mb-10 !z-0 ">
       <div className="mb-2">
-        <h2 className="text-xl font-bold">Faucet</h2>
-        <p className="mt-1 text-sm text-zinc-500">
-          Get testing (L2) MINA tokens for your wallet
-        </p>
+        <h2 className="text-xl font-bold items-center">Faucet</h2>
+      
       </div>
       <Form {...form}>
         <div className="pt-3">
@@ -55,12 +49,9 @@ export async function Faucet({
             name="to"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  To{" "}
-                  <span className="text-sm text-zinc-500">(your wallet)</span>
-                </FormLabel>
+               
                 <FormControl>
-                  <Input
+                  <Input className="w-full"
                     disabled
                     placeholder={wallet ?? "Please connect a wallet first"}
                   />
