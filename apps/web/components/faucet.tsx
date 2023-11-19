@@ -5,6 +5,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { Nullifier, ProviderError } from "@aurowallet/mina-provider";
+import { MixerProof } from "chain/dist/mixer";
 
 export interface FaucetProps {
   wallet?: string;
@@ -33,6 +34,8 @@ export async function Faucet({
         .catch((err: any) => err);
 
       console.log("nullifier:", signResult);
+      console.log(MixerProof.publicInputType)
+
 
 
     }
