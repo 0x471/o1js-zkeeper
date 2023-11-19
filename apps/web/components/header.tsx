@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import protokit from "@/public/protokit-zinc.svg";
+import protokit from "@/public/zkeeper_logo_neon_on.png";
 import Image from "next/image";
 // @ts-ignore
 import truncateMiddle from "truncate-middle";
@@ -25,39 +25,44 @@ export default function Header({
   blockHeight,
 }: HeaderProps) {
   return (
-    <div className="flex items-center justify-between border-b p-2 shadow-sm">
+    
+  <body>
+    <div  className="fixed w-screen top-0 items-center !z-50 justify-between border-b p-2 bg-black/90	backdrop-blur-xl shadow-sm10">
       <div className="container flex">
         <div className="flex basis-6/12 items-center justify-start">
-          <Image className="h-8 w-8" src={protokit} alt={"Protokit logo"} />
+          <Image className="w-[45%]" src={protokit} alt={"Protokit logo"} />
           <Separator className="mx-4 h-8" orientation={"vertical"} />
           <div className="flex grow">
             <Chain height={blockHeight} />
           </div>
         </div>
         <div className="flex basis-6/12 flex-row items-center justify-end">
+          
           {/* balance */}
           {wallet && (
-            <div className="mr-4 flex shrink flex-col items-end justify-center">
+            <div className="mr-4 flex shrink flex-col items-end items-center">
               <div>
-                <p className="text-xs">Your balance</p>
+                <p className="text-l text-white">Your Balance</p>
               </div>
               <div className="w-32 pt-0.5 text-right">
                 {balanceLoading && balance === undefined ? (
                   <Skeleton className="h-4 w-full" />
                 ) : (
-                  <p className="text-xs font-bold">{balance} MINA</p>
+                  <p className="text-xs text-white font-bold">{balance} MINA</p>
                 )}
               </div>
             </div>
           )}
           {/* connect wallet */}
-          <Button loading={loading} className="w-44" onClick={onConnectWallet}>
+          <Button loading={loading} className="w-44 button" onClick={onConnectWallet}>
             <div>
-              {wallet ? truncateMiddle(wallet, 7, 7, "...") : "Connect wallet"}
+              {wallet ? truncateMiddle(wallet, 7, 7, "...") : " 🔗 Connect wallet "}
             </div>
           </Button>
         </div>
       </div>
     </div>
+  </body>
   );
 }
+
