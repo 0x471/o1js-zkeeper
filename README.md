@@ -10,6 +10,7 @@ o1js, with its cryptographic capabilities, plays a pivotal role in implementing 
 ZK appchain rollup on the top of Mina. Providing private transactions with KYC/AML on Mina.
 
 ## Potential Use Cases 
+- Private donations, crowdfunding
 - Private token staking
 - Data monetization
 - Cross-chain ZK DeFi ;p
