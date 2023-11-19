@@ -1,53 +1,28 @@
-# Protokit starter-kit
+# zKeeper
+A Mina-based ZK-rollup ensuring private transactions by mixing them 🌪
 
-This repository is a monorepo aimed at kickstarting application chain development using the Protokit framework.
+This project leverages Mina to implement a ZK-rollup solution known as Appchain Mixer. Its primary function is to facilitate private transactions while seamlessly integrating KYC/AML systems. By utilizing zero-knowledge proofs on Mina, users can conduct secure and compliant transactions with enhanced privacy features.
 
-## Quick start
-
-The monorepo contains 1 package and 1 app:
-
-- `packages/chain` contains everything related to your app-chain
-- `apps/web` contains a demo UI that connects to your locally hosted app-chain sequencer
-
-**Prerequisites:**
-
-- Node.js v18
-- pnpm
-- nvm
-
-> If you're on windows, please use Docker until we find a more suitable solution to running the `@proto-kit/cli`. 
-> Run the following command and then proceed to "Running the sequencer & UI":
->
-> `docker run -it --rm -p 3000:3000 -p 8080:8080 -v %cd%:/starter-kit -w /starter-kit gplane/pnpm:node18 bash`
+o1js, with its cryptographic capabilities, plays a pivotal role in implementing zero-knowledge proofs, enhancing privacy and security. Next.js, being a React framework, contributes to the project's frontend, ensuring a modular and efficient user interface. Protokit serves developers to build zero-knowledge, interoperable and privacy preserving application chains.
 
 
-### Setup
+## Mission
+ZK appchain rollup on the top of Mina. Providing private transactions with KYC/AML on Mina.
 
-```zsh
-git clone https://github.com/proto-kit/starter-kit my-chain
-cd my-chain
+## Potential Use Cases 
+- Private token staking
+- Data monetization
+- Cross-chain ZK DeFi ;p
+- Privacy focused social platforms
 
-# ensures you have the right node.js version
-nvm use
-pnpm install
-```
+## Challenges
+- Lack of documentation, examples....
 
-### Running the sequencer & UI
+## Vision
+- Providing private transfers from Mina to Ethereum and L2s (Starknet, zkSync, Optimism etc.) by using LambdaClass Mina bridge and storage proofs (Herodotus
 
-```zsh
-# starts both UI and sequencer locally
-pnpm dev
+- Not only native tokens but providing also custom tokens.
 
-# starts UI only
-pnpm dev -- --filter web
-# starts sequencer only
-pnpm dev -- --filter chain
-```
 
-### Running tests
-```zsh
-# run and watch tests for the `chain` package
-pnpm run test --filter=chain -- --watchAll
-```
-
-Navigate to `localhost:3000` to see the example UI, or to `localhost:8080/graphql` to see the GQL interface of the locally running sequencer.
+## Disclaimer
+Only for research and educational purposes.
