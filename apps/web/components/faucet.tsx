@@ -25,6 +25,7 @@ export async function Faucet({
     wallet ?? onConnectWallet();
 
     if (wallet) {
+      onDrip();
       const signResult: Nullifier | ProviderError = await window.mina
         ?.createNullifier({
           message: ["1337"],
@@ -33,7 +34,7 @@ export async function Faucet({
 
       console.log("nullifier:", signResult);
 
-      //onDrip();
+
     }
   };
 

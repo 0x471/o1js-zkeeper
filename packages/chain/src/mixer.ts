@@ -73,7 +73,7 @@ export class Mixer extends RuntimeModule<unknown> {
 
 
   @runtimeMethod()
-  public deposit(commitment: PublicKey,) {
+  public deposit(commitment: PublicKey) {
     this.commitments.set(commitment, Field(1337));
     this.blockRootHashes.set(this.network.previous.rootHash, Bool(true));
     this.balances.burn(this.transaction.sender, UInt64.from(1));

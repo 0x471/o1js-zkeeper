@@ -11,6 +11,36 @@ interface BalancesConfig {
   totalSupply: UInt64;
 }
 
+
+export const errors = {
+  underflow: "Cannot subtract, the result would underflow",
+  overflow: "Cannot add, the result would overflow",
+};
+
+export function safeSub(
+  a: UInt64,
+  b: UInt64,
+  error: string = errors.underflow
+) {
+  const fieldSub = a.value.sub(b.value);
+  const fieldSubTruncated = fieldSub.rangeCheckHelper(UInt64.NUM_BITS);
+  const doesNotUnderflow = fieldSubTruncated.equals(fieldSub);
+
+  assert(doesNotUnderflow, error);
+
+  return new UInt64(fieldSubTruncated);
+}
+
+export function safeAdd(a: UInt64, b: UInt64, error = errors.overflow) {
+  const fieldAdd = a.value.add(b.value);
+  const fieldAddTruncated = fieldAdd.rangeCheckHelper(UInt64.NUM_BITS);
+  const doesNotOverflow = fieldAddTruncated.equals(fieldAdd);
+
+  assert(doesNotOverflow, error);
+
+  return new UInt64(fieldAddTruncated);
+}
+
 @runtimeModule()
 export class Balances extends RuntimeModule<BalancesConfig> {
   @state() public balances = StateMap.from<PublicKey, UInt64>(
@@ -18,19 +48,11 @@ export class Balances extends RuntimeModule<BalancesConfig> {
     UInt64
   );
 
-  @state() public circulatingSupply = State.from<UInt64>(UInt64);
 
   @runtimeMethod()
   public mint(address: PublicKey, amount: UInt64): void {
-    const circulatingSupply = this.circulatingSupply.get();
-    const newCirculatingSupply = circulatingSupply.value.add(amount);
-    assert(
-      newCirculatingSupply.lessThanOrEqual(this.config.totalSupply),
-      "Circulating supply would be higher than total supply"
-    );
-    this.circulatingSupply.set(newCirculatingSupply);
     const currentBalance = this.balances.get(address);
-    const newBalance = currentBalance.value.add(amount);
+    const newBalance = safeAdd(currentBalance.value, amount);
     this.balances.set(address, newBalance);
   }
 
@@ -39,13 +61,10 @@ export class Balances extends RuntimeModule<BalancesConfig> {
   public burn(address: PublicKey, amount: UInt64): void {
     const currentBalance = this.balances.get(address);
     assert(
-      amount.lessThanOrEqual(new UInt64(currentBalance)),
+      amount.lessThanOrEqual(currentBalance.value),
       "Amount to burn should be lower than the current balance"
     );
-    const circulatingSupply = this.circulatingSupply.get();
-    this.circulatingSupply.set(circulatingSupply.value.sub(amount));
-
-    const balanceAfterBurn = currentBalance.value.sub(amount);
+    const balanceAfterBurn = safeSub(currentBalance.value, amount);
     this.balances.set(address, balanceAfterBurn);
   }
 }

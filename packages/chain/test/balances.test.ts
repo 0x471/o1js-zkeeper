@@ -66,7 +66,7 @@ describe("balances", () => {
 
 
     const tx1 = await appChain.transaction(alice, () => {
-      balances.mint(alice, UInt64.from(1000));
+      balances.mint(alice, UInt64.from(1));
     });
 
     await tx1.sign();
@@ -77,20 +77,20 @@ describe("balances", () => {
     const balance1 = await appChain.query.runtime.Balances.balances.get(alice);
 
     expect(block1?.txs[0].status).toBe(true);
-    expect(balance1?.toBigInt()).toBe(1000n);
+    expect(balance1?.toBigInt()).toBe(1n);
 
     const tx2 = await appChain.transaction(alice, () => {
-      balances.burn(alice, UInt64.from(1000));
+      balances.burn(alice, UInt64.from(1));
     });
 
     await tx2.sign();
     await tx2.send();
 
     const block2 = await appChain.produceBlock();
-
     const balance2 = await appChain.query.runtime.Balances.balances.get(alice);
 
     expect(block2?.txs[0].status).toBe(true);
-    expect(balance2?.toBigInt()).toBe(1000n);
+    expect(balance2?.toBigInt()).toBe(0n);
   }, 1_000_000);
 });
+ 

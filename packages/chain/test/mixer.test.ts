@@ -1,44 +1,77 @@
+import "reflect-metadata";  
 import { TestingAppChain } from "@proto-kit/sdk";
 import { PrivateKey, UInt64 } from "o1js";
-import { Balances } from "../src/mixer";
-import { log } from "@proto-kit/common";
+import { Mixer } from "../src/mixer";
+import { Balances } from "../src/balances";
+//import { log } from "@proto-kit/common";
 
-log.setLevel("ERROR");
+//log.setLevel("DEBUG");
 
-// describe("balances", () => {
-//   it("should demonstrate how balances work", async () => {
-//     const appChain = TestingAppChain.fromRuntime({
-//       modules: {
-//         Balances,
-//       },
-//       config: {
-//         Balances: {
-//           totalSupply: UInt64.from(10000),
-//         },
-//       },
-//     });
+describe("mixer", () => {
+    it("should demonstrate a deposit operation", async () => {
+        const appChain = TestingAppChain.fromRuntime({
+            modules: {
+                Mixer,
+                Balances
+            },
+            config: {
+                Mixer: {
+                },
+                Balances: {
+                    totalSupply: UInt64.from(10000),
+                },
+            },
+        });
 
-//     await appChain.start();
+        await appChain.start();
 
-//     const alicePrivateKey = PrivateKey.random();
-//     const alice = alicePrivateKey.toPublicKey();
+        const alicePrivateKey = PrivateKey.random();
+        const alice = alicePrivateKey.toPublicKey();
 
-//     appChain.setSigner(alicePrivateKey);
+        appChain.setSigner(alicePrivateKey);
 
-//     const balances = appChain.runtime.resolve("Balances");
+        const balances = appChain.runtime.resolve("Balances");
+        const mixer = appChain.runtime.resolve("Mixer");
 
-//     const tx1 = await appChain.transaction(alice, () => {
-//       balances.addBalance(alice, UInt64.from(1000));
-//     });
+        const tx1 = await appChain.transaction(alice, () => {
+            balances.mint(alice, UInt64.from(1));
+        });
 
-//     await tx1.sign();
-//     await tx1.send();
+        await tx1.sign();
+        await tx1.send();
 
-//     const block = await appChain.produceBlock();
+        const block1 = await appChain.produceBlock();
 
-//     const balance = await appChain.query.runtime.Balances.balances.get(alice);
+        const tx2= await appChain.transaction(alice, () => {
+            mixer.deposit(alice);
+        })
 
-//     expect(block?.txs[0].status).toBe(true);
-//     expect(balance?.toBigInt()).toBe(1000n);
-//   }, 1_000_000);
-// });
+        await tx2.sign();
+        await tx2.send();
+
+        const block2 = await appChain.produceBlock();
+        
+        const appendedCommitment = await appChain.query.runtime.Mixer.commitments.get(alice);
+        const balanceAfterDeposit = await appChain.query.runtime.Balances.balances.get(alice);
+        
+        // const tx3= await appChain.transaction(alice, () => {
+        //     mixer.deposit(alice);
+        // })
+
+        // await tx3.sign();
+        // await tx3.send();
+
+
+        //const block3 = await appChain.produceBlock();
+
+
+        expect(block1?.txs[0].status).toBe(true);
+        expect(balanceAfterDeposit?.toBigInt()).toBe(1n);
+        expect(block2?.txs[0].status).toBe(true);
+        expect(appendedCommitment?.toBigInt()).toBe(1337n);
+        // TODO: comparison of the latest block root hash 
+
+    }, 1_000_000);
+
+    
+});
