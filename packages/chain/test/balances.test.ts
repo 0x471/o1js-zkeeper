@@ -13,7 +13,7 @@ describe("balances", () => {
       },
       config: {
         Balances: {
-          totalSupply: UInt64.from(10000),
+          totalSupply: UInt64.from('10000'),
         },
       },
     });
@@ -28,7 +28,7 @@ describe("balances", () => {
     const balances = appChain.runtime.resolve("Balances");
 
     const tx1 = await appChain.transaction(alice, () => {
-      balances.mint(alice, UInt64.from(1000));
+      balances.mint(alice, UInt64.from('1000'));
     });
 
     await tx1.sign();
@@ -50,7 +50,7 @@ describe("balances", () => {
       },
       config: {
         Balances: {
-          totalSupply: UInt64.from(10000),
+          totalSupply: UInt64.from('10000'),
         },
       },
     });
@@ -66,7 +66,7 @@ describe("balances", () => {
 
 
     const tx1 = await appChain.transaction(alice, () => {
-      balances.mint(alice, UInt64.from(1));
+      balances.mint(alice, UInt64.from('1'));
     });
 
     await tx1.sign();
@@ -80,7 +80,7 @@ describe("balances", () => {
     expect(balance1?.toBigInt()).toBe(1n);
 
     const tx2 = await appChain.transaction(alice, () => {
-      balances.burn(alice, UInt64.from(1));
+      balances.burn(alice, UInt64.from('1'));
     });
 
     await tx2.sign();

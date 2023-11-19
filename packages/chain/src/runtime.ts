@@ -9,7 +9,7 @@ export default {
   },
   config: {
     Balances: {
-      totalSupply: UInt64.from(10000),
+      totalSupply: UInt64.from('10000'),
     },
     Mixer: {}
   },

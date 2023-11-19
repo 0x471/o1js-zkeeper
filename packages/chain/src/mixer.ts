@@ -76,7 +76,7 @@ export class Mixer extends RuntimeModule<unknown> {
   public deposit(commitment: PublicKey) {
     this.commitments.set(commitment, Field(1337));
     this.blockRootHashes.set(this.network.previous.rootHash, Bool(true));
-    this.balances.burn(this.transaction.sender, UInt64.from(1));
+    this.balances.burn(this.transaction.sender, UInt64.from('1'));
   }
 
   @runtimeMethod()
@@ -98,6 +98,6 @@ export class Mixer extends RuntimeModule<unknown> {
     assert(isNullifierUsed.value.not(), "Nullifier has already been used");
 
     this.nullifiers.set(mixerProof.publicOutput.nullifier, Bool(true));
-    this.balances.mint(this.transaction.sender, UInt64.from(1));
+    this.balances.mint(this.transaction.sender, UInt64.from('1'));
   }
 }
