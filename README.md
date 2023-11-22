@@ -4,7 +4,7 @@ A Mina-based ZK-rollup ensuring private transactions by mixing them 🌪
 
 This project leverages Mina to implement a ZK-rollup solution known as Appchain Mixer. Its primary function is to facilitate private transactions while seamlessly integrating KYC/AML systems. By utilizing zero-knowledge proofs on Mina, users can conduct secure and compliant transactions with enhanced privacy features.
 
-[o1js](#), with its cryptographic capabilities, plays a pivotal role in implementing zero-knowledge proofs, enhancing privacy and security. [Next.js](#), being a React framework, contributes to the project's frontend, ensuring a modular and efficient user interface. [Protokit](#) serves developers to build zero-knowledge, interoperable, and privacy-preserving application chains.
+[o1js](https://github.com/o1-labs/o1js/), with its cryptographic capabilities, plays a pivotal role in implementing zero-knowledge proofs, enhancing privacy and security. [Next.js](https://nextjs.org/), being a React framework, contributes to the project's frontend, ensuring a modular and efficient user interface. [Protokit](https://protokit.dev/) serves developers to build zero-knowledge, interoperable, and privacy-preserving application chains.
 
 ## Mission
 
